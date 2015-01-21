@@ -1,0 +1,60 @@
+List of features
+
+
+
+Find bus lines near me:
+
+concept piece for mobile
+   - Show me where you are  (click on the map?)  (this step eliminated when truly mobile)
+    	- webpage asks for your location. (if not in SF, or if user denied to share location, or if not within x distance of active bus) you get a message explaining why you need to click to tell it your location.  Again its a concept piece.
+   - Now tell me where you want to go
+   - shows all bus routes that can get you to within x distance of there. 
+       - uses predictions
+       - highlights stops nearby
+       bounding box to show all buses within 10 minutes (20 minutes) by default.  your local and relevant view
+
+
+
+Render GeoJSON effects
+
+TopoJson example:
+  http://bl.ocks.org/mbostock/4090848
+  http://bl.ocks.org/karmadude/5820393
+
+Rendering GeoJson
+  http://chimera.labs.oreilly.com/books/1230000000345/ch12.html#_json_meet_geojson
+
+
+SF land?
+
+
+
+
+
+3. Zooming map
+  - should the zoom modify the projection parameters directly?
+
+
+
+
+1. Support errors from NextBus feed
+  - special attention to "should-retry" parameter
+
+	 <body>
+		 <Error shouldRetry="true">
+		 Agency server cannot accept client while status is: agency
+		 name = sf-muni,status = UNINITIALIZED, client count = 0, last
+		 even t = 0 seconds ago Could not get route list for agency tag "sf-muni".
+		 Either the route tag is bad or the system is initializing.
+		 </Error>
+	 </body>
+
+
+2. Lets start with one route.  We'll give each vehicle along the route a marker on the map.
+http://webservices.nextbus.com/service/publicXMLFeed?command=vehicleLocations&a=sf-muni&r=N&t=1421559171725
+
+ - function to poll for locations given route and lastTime
+ - tick function to poll every 15 seconds
+ - running list of active routes to poll
+
+
