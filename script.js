@@ -31,13 +31,27 @@ $(document).ready(function() {
 		.scaleExtent([270000,4000000])
 		.on("zoom", function() {
 			projection.translate(d3.event.translate).scale(d3.event.scale);
-			svg.selectAll(".svg_nbhd").attr("d", path);
+			//svg.selectAll(".svg_nbhd").attr("d", path);
+			svg.selectAll(".maplayer").attr("d", path);
+			
+			svg.selectAll(".vehicle_mark").attr("cx", function(d) {
+			    return projection([d.lon, d.lat])[0];
+			});
+			svg.selectAll(".vehicle_mark").attr("cy", function(d) {
+			    return projection([d.lon, d.lat])[1];
+			});
+			svg.selectAll(".vehiclemarkers").attr("transform", function(d) {
+				return build_vehicle_transform(d.lon, d.lat, d.lon_init, d.lat_init);
+			});
+
+			/*
 			svg.selectAll("circle.vehicle").attr("cx", function(d) {
 			    return projection([d.lon, d.lat])[0];
 			});
 			svg.selectAll("circle.vehicle").attr("cy", function(d) {
 			    return projection([d.lon, d.lat])[1];
 			});
+			*/
 
 	});
 
@@ -53,18 +67,19 @@ $(document).ready(function() {
 	
 	
 	
-	svg_load_paths("sfmaps/neighborhoods.json", "svg_nbhd");
-	//svg_load_paths("sfmaps/freeways.json", 		"svg_freeway");
-	//svg_load_paths("sfmaps/arteries.json", 		"svg_artery");
-	//svg_load_paths("sfmaps/streets.json", 		"svg_street");
+	svg_load_paths("sfmaps/neighborhoods.json", "maplayer svg_nbhd");
+	//svg_load_paths("sfmaps/freeways.json", 		"maplayer svg_freeway");
+	//svg_load_paths("sfmaps/arteries.json", 		"maplayer svg_artery");
+	//svg_load_paths("sfmaps/streets.json", 		"maplayer svg_street");
 	
 
 	my_agency = "sf-muni";
 	fetchRoutesForAgency(my_agency);
 
-	setTimeout(registerListeners, 3000);
+	setTimeout(registerListeners, 2000);	
 	//setInterval(pollAllMuni, 15000);
 	setInterval(pollSelected, 15000);
+	setInterval(refreshDisplay, 500);
 
 	/*
 	*
@@ -97,7 +112,7 @@ $(document).ready(function() {
 			routes[agency_tag]['routes'][route_tag]['last_time'] = 0;
 			routes[agency_tag]['routes'][route_tag]['poll'] = false;
 
-			$("#route_picker").append("<div id='route-" + route_tag + "' class='route_toggle'>" + route_tag + "</div>");
+			$("#route_picker").append("<div id='routepicker_" + route_tag + "' class='route_toggle'>" + route_tag + "</div>");
 
 			pollVehicleLocationsForRoute(my_agency, route_tag);
 			//buildRoutePicker(routes[agency_tag]['routes']);
@@ -132,6 +147,8 @@ $(document).ready(function() {
 					for (var j=0; j<vehicles.length; j++) {
 						// update any matches
 						if (vehicles[j]['id'] == json.vehicle[i]['id']) {
+							json.vehicle[i].lon_init = vehicles[j].lon_init;
+							json.vehicle[i].lat_init = vehicles[j].lat_init;
 							vehicles[j] = json.vehicle[i];
 							isnew = false;
 							break;
@@ -141,12 +158,14 @@ $(document).ready(function() {
 					}
 					// if no match, append the new vehicle
 					if (isnew) {
+						json.vehicle[i].lon_init = json.vehicle[i].lon;
+						json.vehicle[i].lat_init = json.vehicle[i].lat;
 						routes[agency_tag]['routes'][route_tag]['vehicles'].push(json.vehicle[i]);
 					}
 				}
 			}
 
-			displayVehiclesForRoute(my_agency, route_tag);
+			//displayVehiclesForRoute(my_agency, route_tag);
 		});
 	}
 
@@ -168,7 +187,70 @@ $(document).ready(function() {
 			}
 		});
 	}
+	function refreshDisplay() {
+		$.each(routes[my_agency]['routes'], function(i,d) {
+				displayVehiclesForRoute(my_agency, d.tag);
+		});
+	}
 
+
+	function displayVehiclesForRoute(agency_tag, route_tag) {
+
+		//console.log("DISPLAY ROUTE", routes[agency_tag]['routes'][route_tag]);
+
+		var vehicles = svg.selectAll(".route_" + route_tag)
+			.data(routes[agency_tag]['routes'][route_tag]['vehicles']);
+
+			
+		vehicles
+		    .transition()
+		    .duration(3000)
+		    .ease('linear')
+
+			.attr("transform", function(d) {
+				return build_vehicle_transform(d.lon, d.lat, d.lon_init, d.lat_init);
+			});
+			
+			/*
+		    .attr("cx", function(d) {
+	            return projection([d.lon, d.lat])[0];
+	        })
+	        .attr("cy", function(d) {
+	            return projection([d.lon, d.lat])[1];
+	        })*/
+
+	    // add any new vehicles
+		vehicles.enter()
+			.append('g')
+			  	.attr("class", function(d) {
+					return "vehiclemarkers route_" + route_tag;
+			  	})
+			  	.attr("id", function(d) {
+					return "vehicle_" + d.id;
+				})
+			  	.attr("visibility", function(){
+			  		if (routes[agency_tag]['routes'][route_tag]['poll']) {
+			  			return "visible";
+			  		} else {
+			  			return "hidden";
+			  		}
+			  	})
+		  	.append("circle")
+		  		.attr("class", "vehicle_mark")
+		    	.attr("cx", function(d) {
+		            return projection([d.lon, d.lat])[0];
+		        })
+		        .attr("cy", function(d) {
+		            return projection([d.lon, d.lat])[1];
+		        })
+		    	.attr("r", 2)
+		    	.attr("fill", "#" + routes[agency_tag]['routes'][route_tag]['color']);
+
+		vehicles.exit().remove();
+	    	//.attr("fill-opacity", ".7");
+	}
+
+	/*
 	function displayVehiclesForRoute(agency_tag, route_tag) {
 
 		//console.log("DISPLAY ROUTE", routes[agency_tag]['routes'][route_tag]);
@@ -208,7 +290,7 @@ $(document).ready(function() {
 	        })
 	        .attr("cy", function(d) {
 	            return projection([d.lon, d.lat])[1];
-	        }); */
+	        }); 
 
 	    // add any new vehicles
 		vehicles.enter()
@@ -230,6 +312,7 @@ $(document).ready(function() {
 		vehicles.exit().remove();
 	    	//.attr("fill-opacity", ".7");
 	}
+	*/
 
 
 
@@ -250,7 +333,7 @@ $(document).ready(function() {
 	function registerListeners() {
 		$(".route_toggle").on("click", function() {
 
-			var route_tag = $(this).attr("id").replace("route-","");
+			var route_tag = $(this).attr("id").replace("routepicker_","");
 			console.log("toggled route: ", route_tag);	
 
 			if ($(this).hasClass("selected")) {
@@ -259,11 +342,11 @@ $(document).ready(function() {
 				// turn off vehicle display
 				routes[my_agency]['routes'][route_tag]['poll'] = false;
 
-				$("#vehiclegroup-"+route_tag).css({
+				$(".route_"+route_tag).css({
 					"visibility": "hidden"
 				});
 
-				$("#route-"+route_tag).css({
+				$("#routepicker_"+route_tag).css({
 					"background-color": "#fff",
 					"color": "black"
 				});
@@ -274,11 +357,11 @@ $(document).ready(function() {
 				// turn on vehicle display
 				routes[my_agency]['routes'][route_tag]['poll'] = true;
 
-				$("#vehiclegroup-"+route_tag).css({
+				$(".route_"+route_tag).css({
 					"visibility": "visible"
 				});
 
-				$("#route-"+route_tag).css({
+				$("#routepicker_"+route_tag).css({
 					"background-color": "#" + routes[my_agency]['routes'][route_tag]['color'],
 					"color": "#" + routes[my_agency]['routes'][route_tag]['oppositeColor']
 				});
@@ -286,6 +369,12 @@ $(document).ready(function() {
 			return false;
 		});
 	}
+
+	function build_vehicle_transform(lon, lat, lon_init, lat_init) {
+		var t = "translate(" + (projection([lon, lat])[0] - projection([lon_init, lat_init])[0]) + "," + (projection([lon, lat])[1] - projection([lon_init, lat_init])[1]) + ")";
+		return t;
+	}
+
 /*
 	function svg_load_polygons(json_src, html_class) {
 		d3.json(json_src, function(d) {

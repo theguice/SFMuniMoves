@@ -14,14 +14,17 @@
 	.svg_street {
 		stroke: #666;
 	    stroke-opacity: .2;
+	    fill-opacity: 0;
 	}
 	.svg_freeway {
 		stroke: #666;
 	    stroke-opacity: .5;
+	    fill-opacity: 0;
 	}
 	.svg_artery {
 		stroke: #666;
 		stroke-opacity: .5;
+		fill-opacity: 0;
 	}
 	.svg_nbhd {
 		fill: #fff;
@@ -76,8 +79,9 @@
 </head>
 
 <body>
-	<div id="map" class="inline"></div>
-	<div id="sidebar" class="inline">
+	<div id="map"></div>
+	<div id="sidebar">
+		<div id="header"><h2>Choose Routes</h2></div>
 		<div id="route_picker"></div>
 	</div>
 
