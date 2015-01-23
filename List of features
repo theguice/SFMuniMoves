@@ -1,4 +1,28 @@
-List of features
+Ideas and features
+
+
+
+DONE: Select all / none options. 
+DONE: Larger vehicle markers. 
+
+Show transparent path overlays of routes
+toggle streets, arteries, etc visibility (4 buttons)
+
+Pulse vehicle markers on update (will need to build an isNew location check function into the portion of poll vehicle fn)
+
+Get started by: popover. Select some routes to start tracking (or click here to show all routes)
+
+Hide/show side menu. Jquery slide out 
+
+Zoom to neighborhood? Use labels in the geojson. 
+
+Hover on vehicle marker to show metadata
+Hover paths of route to show route name, # vehicles, ...
+
+Show stops?
+ - hover to show predictions. Too much...
+Select where you are and want to go? Green/red pins
+
 
 
 
