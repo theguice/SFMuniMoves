@@ -1,0 +1,78 @@
+
+body {
+	margin: 0;
+}
+header, footer {
+	text-align: center;
+	margin-left: auto;
+	margin-right: auto;
+	position: fixed;
+	left: 0;
+	width: 75%;
+	
+}
+footer {
+	bottom: 0;
+}
+.main {
+	width: 75%;
+}
+#map {
+	position: fixed;
+	left: 0;
+}
+#sidebar {
+	background-color: #eee;
+	position: relative;
+	float: right;
+	overflow: scroll;
+	width: 25%;
+	height: 100vh;
+	min-width: 200px;
+	z-index: 10;
+	text-align: center;
+}
+.maplayer {
+	stroke: #666;
+	stroke-opacity: .2;
+	fill-opacity: 0;
+}
+#progressbar {
+	width: 320px;
+	margin-right: auto;
+	margin-left: auto;
+	text-align: center;
+}
+
+.rp_label {
+	margin-top: 10px;
+	text-align: left;
+	width: 80%;
+	padding-left: 10%;
+	padding-right: 10%;
+}
+
+/* Route Selection Buttons */
+.button, .route_toggle, .all_route_toggle {
+  width: 45px;
+  height: 20px;
+  padding: 2px;
+  display: inline-block;
+  overflow: hidden;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 12px;
+  cursor: pointer;
+  border: 1px #bbb solid;
+  background-color: #fff;
+  border-radius: 5px;
+  margin-right: 1px;
+  margin-left: 1px;
+}
+.button:hover, .route_toggle:hover, .all_route_toggle:hover {
+  background-color: #C6FF74;
+  color: black;
+}
+.button.selected, .route_toggle.selected {
+  border: 1px #666 solid;
+}

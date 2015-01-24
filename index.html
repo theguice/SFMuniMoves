@@ -1,120 +1,53 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <head>
-	<style>
 
-	/* CSS goes here. */
-	body {
-		margin: 0;
-	}
-	.title {
-		float:left;	
-		width: 75%;
-		
-	}
-	.main {
-		text-align: center;
-		margin-left: auto;
-		margin-right: auto;
-
-	}
-	#map {
-		position: fixed;
-		left: 0;
-	}
-	.svg_street {
-		stroke: #666;
-	    stroke-opacity: .2;
-	    fill-opacity: 0;
-	}
-	.svg_freeway {
-		stroke: #666;
-	    stroke-opacity: .5;
-	    fill-opacity: 0;
-	}
-	.svg_artery {
-		stroke: #666;
-		stroke-opacity: .5;
-		fill-opacity: 0;
-	}
-	.svg_nbhd {
-		fill: #fff;
-		fill-opacity: 1;
-	}
-	
-	#sidebar {
-		background-color: #fdfdfd;
-		position: relative;
-		overflow: scroll;
-		right: 0;
-		width: 25%;
-		z-index: 10;
-	}
-	.rp_label {
-		margin-top: 10px;
-		text-align: left;
-		width: 80%;
-		padding-left: 10%;
-		padding-right: 10%;
-	}
-
-	.route_toggle, .all_route_toggle{
-	  width: 45px;
-	  height: 20px;
-	  padding: 2px;
-	  display: inline-block;
-	  overflow: hidden;
-	  text-align: center;
-	  font-size: 12px;
-	  cursor: pointer;
-	  border: 1px #eee solid;
-	  border-radius: 5px;
-	}
-
-	.route_toggle:hover, .all_route_toggle:hover {
-	  background-color: #C6FF74;
-	  color: black;
-	}
-
-	.route_toggle.selected {
-	  border: 1px #fdfdfd solid;
-	}
-
-	.hide {
-		display: none;
-	}
-
-
-	</style>
-
-	<script src="lib/jquery-1.11.1.min.js"></script>
-	<script src="lib/jquery.xml2json.js"></script>
+	<!-- Libs -->
+	<link rel="stylesheet" href="lib/jquery-ui-1.11.2/jquery-ui.theme.min.css">
+	<script src="lib/jquery/jquery-1.11.1.min.js"></script>
+	<script src="lib/jquery/jquery.xml2json.js"></script>
+	<script src="lib/jquery-ui-1.11.2/jquery-ui.min.js"></script>
+	<!-- Bootstrap -->
+	<link rel="stylesheet" href="lib/bootstrap-3.2.0/css/bootstrap.min.css">
+	<link rel="stylesheet" href="lib/bootstrap-3.2.0/css/bootstrap-theme.min.css">
+	<script src="lib/bootstrap-3.2.0/js/bootstrap.min.js"></script>
+	<!-- D3 -->	
 	<script src="lib/d3/d3.min.js"></script>
 	<script src="lib/moment.js"></script>
+	<!-- my app -->
+	<link rel="stylesheet" href="style.css">
 	<script src="script.js"></script>
 
 </head>
 
 <body>
+	<header>
+		<h1 class="title"><i>Realtime</i> SF Muni</h1>
+		<div id="progressbar"></div>
+		<p id="next_update"></p>
+		
+	</header>
 	<div class="main">
-		<h1 class="title">Realtime SF Muni Moves</h1>
-		<div id="map">
+		<div id="map"></div>
 	</div>
 	<div id="sidebar">
-		<div id="header"><h2>Choose Routes</h2></div>
+		<br/>
+		<h2 title="I hope you like it!">Choose Routes</h2>
+
 		<div id="rp">
 			<div>
-				<p class='all_route_toggle'>All</p>
+				<p class='button all_route_toggle'>All</p>
 			</div>
 			<div id="rp_lightrail">
-				<p class='rp_label'>Light Rail</p>
+				<!-- bootstrap's popover data embedded in DOM -->
+				<p class='rp_label' id='get_started' title="Getting Started" data-container="body" data-toggle="popover" data-placement="left" data-content="Select some routes to get started">Light Rail</p>
 			</div>
 			<div id="rp_bus">
 				<p class='rp_label'>Bus</p>
 			</div>
 		</div>
 	</div>
-
+	<footer><a href="http://www.nextbus.com/xmlFeedDocs/NextBusXMLFeed.pdf">source: nextbus.com</a></footer>
 </body>
 </html>
 
