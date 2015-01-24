@@ -29,6 +29,9 @@ $(document).ready(function() {
 		.on("zoom", function() {
 			projection.translate(d3.event.translate).scale(d3.event.scale);
 			svg.selectAll(".maplayer").attr("d", path);
+			svg.selectAll(".route_path").attr("d", function(d) {
+				return line(d.point);
+			});
 			svg.selectAll(".vehicle_mark").attr("cx", function(d) {
 			    return projection([d.lon, d.lat])[0];
 			});
